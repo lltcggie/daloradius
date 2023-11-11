@@ -38,6 +38,12 @@ RUN apt-get update \
 RUN mkdir /app /data /internal_data
 WORKDIR /app
 
+# Copy policy file to image
+ADD ./macauth /etc/raddb/policy.d/
+
+# Enable MAC Authentication by Calling-Station-Id
+RUN sed -i 's|post-auth {|post-auth {\n\trewrite_calling_station_id\n\tverify_calling_station_id\n|' /etc/raddb/sites-available/default
+
 # Copy init script to image
 ADD ./init-freeradius.sh /app
 
